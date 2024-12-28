@@ -12,6 +12,9 @@ struct ContentView: View {
     @State private var correctAnswer = Int.random(in: 0...2)
     @State private var showingScore = false
     @State private var yourScore = ""
+    @State private var score = 0
+    @State private var showingFinalScore = false
+    @State private var questionCount = 0
     var body: some View {
         ZStack{
             RadialGradient(stops: [
@@ -36,11 +39,11 @@ struct ContentView: View {
                     }
                     
                     
-                    ForEach (0..<3) {g in
-                        Button {flaggedTapped(g)
+                    ForEach (0..<3) {number in
+                        Button {flaggedTapped(number)
                         }
                         label: {
-                            Image(countries[g])
+                            Image(countries[number])
                                 .clipShape(.capsule)
                                 .shadow(radius: 5)
                         }
@@ -49,9 +52,9 @@ struct ContentView: View {
                 .padding(.vertical, 20)
                 .frame(maxWidth: .infinity)
                 .background(.regularMaterial)
-                .clipShape(.rect(cornerRadius: 20))
+                .clipShape(.rect(cornerRadius: 50))
                 Spacer()
-                Text("Score: ???")
+                Text("Score: \(score)")
                     .foregroundStyle(.white)
                     .font(.largeTitle.bold())
                 Spacer()
@@ -63,8 +66,17 @@ struct ContentView: View {
                 Button ( "Continue",  action: askQuestion)
             }
             message : {
-                Text( "Your score is ??? ")
+               
+                    Text( "Your score is \(score)")
                    
+             
+            }
+            .alert("Game over", isPresented: $showingFinalScore)
+            {
+                Button ( "Restart", action: reset)
+            }
+            message: {
+                Text( "Your final score is \(score)")
             }
         }
       
@@ -72,14 +84,30 @@ struct ContentView: View {
     func flaggedTapped ( _ number : Int ){
         if number == correctAnswer {
             yourScore = "Correct"
+            score += 1
         } else {
-            yourScore = "Wrong Answer"
+            yourScore = "Wrong! That’s the flag of \(countries[number])"
         }
-       showingScore = true
+        showingScore = true
+        questionCount += 1
+        
+        if questionCount == 8 {
+            showingFinalScore = true
+        }
+        else {
+            showingScore = true
+        }
     }
     func askQuestion (){
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
+    }
+    func reset(){
+        score = 0
+        questionCount = 0
+        countries.shuffle()
+        correctAnswer = Int.random(in: 0...2)
+        
     }
 }
 #Preview {
