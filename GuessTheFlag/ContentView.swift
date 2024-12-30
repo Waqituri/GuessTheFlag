@@ -43,9 +43,14 @@ struct ContentView: View {
                         Button {flaggedTapped(number)
                         }
                         label: {
-                            Image(countries[number])
-                                .clipShape(.capsule)
-                                .shadow(radius: 5)
+                            FalgImage(imageName: countries[number])
+                            
+                            
+                            
+                            
+//                            Image(countries[number])
+//                                .clipShape(.capsule)
+//                                .shadow(radius: 5)
                         }
                     }
                 }
@@ -112,4 +117,17 @@ struct ContentView: View {
 }
 #Preview {
     ContentView()
+}
+
+
+struct FalgImage : View {
+    var imageName: String
+    var body: some View {
+        
+        Image(imageName)
+            .clipShape(.capsule)
+            .shadow(radius: 5)
+        
+        
+    }
 }
